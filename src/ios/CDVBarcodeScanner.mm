@@ -36,8 +36,11 @@
 // plugin class
 //------------------------------------------------------------------------------
 @interface CDVBarcodeScanner : CDVPlugin {}
+@property (nonatomic, retain) CDVbcsProcessor*  processor;
+
 - (NSString*)isScanNotPossible;
 - (void)scan:(CDVInvokedUrlCommand*)command;
+- (void)stop:(CDVInvokedUrlCommand*)command;
 - (void)encode:(CDVInvokedUrlCommand*)command;
 - (void)returnImage:(NSString*)filePath format:(NSString*)format callback:(NSString*)callback;
 - (void)returnSuccess:(NSString*)scannedText format:(NSString*)format cancelled:(BOOL)cancelled flipped:(BOOL)flipped callback:(NSString*)callback;
@@ -70,6 +73,7 @@
 
 - (id)initWithPlugin:(CDVBarcodeScanner*)plugin callback:(NSString*)callback parentViewController:(UIViewController*)parentViewController alterateOverlayXib:(NSString *)alternateXib;
 - (void)scanBarcode;
+- (void)stopBarcode;
 - (void)barcodeScanSucceeded:(NSString*)text format:(NSString*)format;
 - (void)barcodeScanFailed:(NSString*)message;
 - (void)barcodeScanCancelled;
@@ -149,6 +153,10 @@
   return NO;
 }
 
+- (void)stop:(CDVInvokedUrlCommand*)command {
+    NSLog(@"------------stop-------");
+    [self.processor performSelector:@selector(stopBarcode) withObject:nil afterDelay:0];
+}
 
 
 //--------------------------------------------------------------------------
@@ -354,6 +362,13 @@ parentViewController:(UIViewController*)parentViewController
 
     // delayed [self openDialog];
     [self performSelector:@selector(openDialog) withObject:nil afterDelay:1];
+}
+
+
+- (void)stopBarcode {
+    NSLog(@"--------stopBarcode----");
+    NSString* errorMessage = [self setUpCaptureSession];
+    [self barcodeScanFailed:errorMessage];
 }
 
 //--------------------------------------------------------------------------

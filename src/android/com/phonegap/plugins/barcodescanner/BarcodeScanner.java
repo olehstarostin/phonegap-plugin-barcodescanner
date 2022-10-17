@@ -27,6 +27,7 @@ import org.apache.cordova.PermissionHelper;
 import com.google.zxing.client.android.CaptureActivity;
 import com.google.zxing.client.android.encode.EncodeActivity;
 import com.google.zxing.client.android.Intents;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 /**
  * This calls out to the ZXing barcode reader and returns the result.
@@ -37,6 +38,7 @@ public class BarcodeScanner extends CordovaPlugin {
     public static final int REQUEST_CODE = 0x0ba7c;
 
     private static final String SCAN = "scan";
+    private static final String STOP = "stop";
     private static final String ENCODE = "encode";
     private static final String CANCELLED = "cancelled";
     private static final String FORMAT = "format";
@@ -121,9 +123,13 @@ public class BarcodeScanner extends CordovaPlugin {
             } else {
               scan(args);
             }
-        } else {
+          } else if (action.equals(STOP)) {
+            Intent intent = new Intent("barcode-scanner-stop");
+            LocalBroadcastManager.getInstance(cordova.getActivity().getBaseContext()).sendBroadcast(intent);
+            callbackContext.success("success");
+          } else {
             return false;
-        }
+          }
         return true;
     }
 
