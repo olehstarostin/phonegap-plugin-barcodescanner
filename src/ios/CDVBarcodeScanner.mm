@@ -347,7 +347,7 @@ parentViewController:(UIViewController*)parentViewController
 
 //--------------------------------------------------------------------------
 - (void)scanBarcode {
-
+    NSLog(@"--------scanBarcode----");
 //    self.captureSession = nil;
 //    self.previewLayer = nil;
     NSString* errorMessage = [self setUpCaptureSession];
